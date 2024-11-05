@@ -88,9 +88,17 @@ def parse_line(line):
     removes whitespaces, splits into list of sanitize words
     """
 
-    line = line.strip()
-    dirty_list_of_words = line.split(" ")
+    dirty_list_of_words = _convert_to_no_whitespace_list(line)
 
+    return _sanitize_list(dirty_list_of_words)
+
+
+def _convert_to_no_whitespace_list(line):
+    line = line.strip()
+    return line.split(" ")
+
+
+def _sanitize_list(dirty_list_of_words):
     list_of_words = []
 
     for dirty_word in dirty_list_of_words:
@@ -100,6 +108,7 @@ def parse_line(line):
             list_of_words.append(sanitized_word)
 
     return list_of_words
+
 
 
 # %%----------------------------------------------------------------------------
