@@ -86,15 +86,20 @@ def parse_line(line):
     """    
     Parses a given line, 
     removes whitespaces, splits into list of sanitize words
-    Uses sanitize_word()
-    
-    HINT: Consider using the "strip()" and "split()" function here
-    
     """
 
+    line = line.strip()
+    dirty_list_of_words = line.split(" ")
+
     list_of_words = []
-    # <YOUR-CODE-HERE>
-    return (list_of_words)
+
+    for dirty_word in dirty_list_of_words:
+        sanitized_word = sanitize_word(dirty_word)
+
+        if len(sanitized_word) > 0:
+            list_of_words.append(sanitized_word)
+
+    return list_of_words
 
 
 # %%----------------------------------------------------------------------------
