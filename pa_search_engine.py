@@ -126,12 +126,23 @@ def index_file(filename
         and updates the invert_index (which is calculated across all files)
     """
     start = timer()
-    with open(filepath, 'r', encoding="utf-8") as f:
-        pass
+    with open(filepath, 'r', encoding="utf-8") as document:
+        update_forward_index(document, forward_index)
     # <YOUR-CODE-HERE>
 
     end = timer()
     print("Time taken to index file: ", filename, " = ", end - start)
+
+
+def update_forward_index(document, forward_index):
+    document.seek(0)
+    words = set(document.read)
+    for word in words:
+        present_in_documents = forward_index.get(word)
+        if present_in_documents:
+            present_in_documents.add(document.name)
+        else:
+            present_in_documents[word] = {document.name}
 
 
 # %%----------------------------------------------------------------------------
