@@ -70,15 +70,15 @@ def sanitize_word(word):
     """
     Removes all non ascii characters from a given word
     """
-    newword = ""
+    new_word = ""
 
     lowercase_ascii = set(string.ascii_lowercase)
 
     for letter in word.lower():
         if letter in lowercase_ascii:
-            newword += letter
+            new_word += letter
 
-    return (newword)
+    return (new_word)
 
 
 # %%----------------------------------------------------------------------------
