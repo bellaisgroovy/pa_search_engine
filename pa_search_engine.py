@@ -127,14 +127,15 @@ def index_file(filename
     """
     start = timer()
     with open(filepath, 'r', encoding="utf-8") as document:
-        update_forward_index(document, forward_index)
+        _update_forward_index(document, forward_index)
+        _update_term_freq()
     # <YOUR-CODE-HERE>
 
     end = timer()
     print("Time taken to index file: ", filename, " = ", end - start)
 
 
-def update_forward_index(document, forward_index):
+def _update_forward_index(document, forward_index):
     words = _create_set_of_all_words_in(document)
 
     for word in words:
@@ -150,7 +151,7 @@ def _amend_or_create(given_set, new_item):
         return {new_item}
 
 
-def update_term_freq(document, term_freq):
+def _update_term_freq(document, term_freq):
     word_set = _create_set_of_all_words_in(document)
     word_list = _create_list_of_all_words_in(document)
     total_words = len(word_list)
