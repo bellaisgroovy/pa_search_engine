@@ -78,7 +78,7 @@ def sanitize_word(word):
         if letter in lowercase_ascii:
             new_word += letter
 
-    return (new_word)
+    return new_word
 
 
 # %%----------------------------------------------------------------------------
