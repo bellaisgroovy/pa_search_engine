@@ -139,7 +139,7 @@ def update_forward_index(document, forward_index):
     words = set(document.read)
 
     for word in words:
-        add_to_or_create_present_in_documents(forward_index, word, document.name)
+        _add_to_or_create_present_in_documents(forward_index, word, document.name)
 
 
 def _add_to_or_create_present_in_documents(forward_index, word, item):
