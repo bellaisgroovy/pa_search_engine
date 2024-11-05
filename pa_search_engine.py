@@ -110,7 +110,6 @@ def _sanitize_list(dirty_list_of_words):
     return list_of_words
 
 
-
 # %%----------------------------------------------------------------------------
 def index_file(filename
                , filepath
