@@ -130,6 +130,7 @@ def index_file(filename
         _update_forward_index(forward_index, document)
         _update_term_freq(term_freq, document)
         _update_doc_rank(doc_rank, document)
+        _update_invert_index(invert_index, document)
     # <YOUR-CODE-HERE>
 
     end = timer()
@@ -185,6 +186,15 @@ def _create_set_of_all_words_in(document):
 def _update_doc_rank(doc_rank, document):
     number_words_in_document = len(_create_list_of_all_words_in(document))
     doc_rank[document.name] = 1 / number_words_in_document
+
+
+def _update_invert_index(invert_index, document):
+    words = _create_set_of_all_words_in(document)
+
+    for word in words:
+        is_present_in = invert_index.get(word)
+        invert_index[word] = _amend_or_create(given_set=is_present_in, new_item=document.name)
+
 
 # %%----------------------------------------------------------------------------
 def search(search_phrase
