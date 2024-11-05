@@ -160,6 +160,7 @@ def update_term_freq(document, term_freq):
 
         term_freq[word] = word_occurrences / total_words
 
+
 def _occurrence_count(search_item, array):
     count = 0
     for item in array:
@@ -167,6 +168,7 @@ def _occurrence_count(search_item, array):
             count += 1
 
     return count
+
 
 def _create_list_of_all_words_in(document):
     document.seek(0)
