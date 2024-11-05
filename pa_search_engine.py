@@ -142,7 +142,7 @@ def update_forward_index(document, forward_index):
         add_to_or_create_present_in_documents(forward_index, word, document.name)
 
 
-def add_to_or_create_present_in_documents(forward_index, word, item):
+def _add_to_or_create_present_in_documents(forward_index, word, item):
     present_in_documents = forward_index.get(word)
     if present_in_documents:
         present_in_documents.add(item)
