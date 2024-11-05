@@ -178,7 +178,7 @@ def _create_list_of_all_words_in(document):
 
 
 def _create_set_of_all_words_in(document):
-    return set(_create_list_of_all_words_in())
+    return set(_create_list_of_all_words_in(document))
 
 
 # %%----------------------------------------------------------------------------
