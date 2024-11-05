@@ -140,9 +140,7 @@ def index_file(filename
 def _update_forward_index(forward_index, document):
     words = _create_set_of_all_words_in(document)
 
-    for word in words:
-        is_present_in = forward_index.get(word)
-        forward_index[word] = _amend_or_create(given_set = is_present_in, new_item = document.name)
+    forward_index[document.name] = words
 
 
 def _amend_or_create(given_set, new_item):
