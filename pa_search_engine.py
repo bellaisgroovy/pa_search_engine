@@ -137,12 +137,17 @@ def index_file(filename
 def update_forward_index(document, forward_index):
     document.seek(0)
     words = set(document.read)
+
     for word in words:
-        present_in_documents = forward_index.get(word)
-        if present_in_documents:
-            present_in_documents.add(document.name)
-        else:
-            present_in_documents[word] = {document.name}
+        add_to_or_create_present_in_documents(forward_index, word, document.name)
+
+
+def add_to_or_create_present_in_documents(forward_index, word, item):
+    present_in_documents = forward_index.get(word)
+    if present_in_documents:
+        present_in_documents.add(item)
+    else:
+        present_in_documents[word] = {item}
 
 
 # %%----------------------------------------------------------------------------
