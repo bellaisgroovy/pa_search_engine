@@ -135,19 +135,47 @@ def index_file(filename
 
 
 def update_forward_index(document, forward_index):
-    document.seek(0)
-    words = set(document.read)
+    words = _create_set_of_all_words_in(document)
 
     for word in words:
-        _add_to_or_create_present_in_documents(forward_index, word, document.name)
+        is_present_in = forward_index.get(word)
+        forward_index[word] = _amend_or_create(given_set = is_present_in, new_item = document.name)
 
 
-def _add_to_or_create_present_in_documents(forward_index, word, item):
-    present_in_documents = forward_index.get(word)
-    if present_in_documents:
-        present_in_documents.add(item)
+def _amend_or_create(given_set, new_item):
+    if given_set:
+        given_set.add(new_item)
+        return given_set
     else:
-        present_in_documents[word] = {item}
+        return {new_item}
+
+
+def update_term_freq(document, term_freq):
+    word_set = _create_set_of_all_words_in(document)
+    word_list = _create_list_of_all_words_in(document)
+    total_words = len(word_list)
+
+    for word in word_set:
+        word_occurrences = _occurrence_count(word, word_list)
+
+        term_freq[word] = word_occurrences / total_words
+
+def _occurrence_count(search_item, array):
+    count = 0
+    for item in array:
+        if item == search_item:
+            count += 1
+
+    return count
+
+def _create_list_of_all_words_in(document):
+    document.seek(0)
+
+    return parse_line(document.read())
+
+
+def _create_set_of_all_words_in(document):
+    return set(_create_list_of_all_words_in())
 
 
 # %%----------------------------------------------------------------------------
