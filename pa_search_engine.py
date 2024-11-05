@@ -128,7 +128,8 @@ def index_file(filename
     start = timer()
     with open(filepath, 'r', encoding="utf-8") as document:
         _update_forward_index(document, forward_index)
-        _update_term_freq()
+        _update_term_freq(term_freq, document)
+        _update_doc_rank(doc_rank, document)
     # <YOUR-CODE-HERE>
 
     end = timer()
@@ -180,6 +181,10 @@ def _create_list_of_all_words_in(document):
 def _create_set_of_all_words_in(document):
     return set(_create_list_of_all_words_in(document))
 
+
+def _update_doc_rank(doc_rank, document):
+    number_words_in_document = len(_create_list_of_all_words_in(document))
+    doc_rank[document.name] = 1 / number_words_in_document
 
 # %%----------------------------------------------------------------------------
 def search(search_phrase
