@@ -126,72 +126,65 @@ def index_file(filename
         and updates the invert_index (which is calculated across all files)
     """
     start = timer()
+
     with open(filepath, 'r', encoding="utf-8") as document:
-        _update_forward_index(forward_index, document)
-        _update_term_freq(term_freq, document)
-        _update_doc_rank(doc_rank, document)
-        _update_invert_index(invert_index, document)
-    # <YOUR-CODE-HERE>
+        # instantiate temporary trackers
+        word_occurrences_count = {}  # {word : number of occurences}
+        total_words_in_document = 0
+
+        # loop through lines in document
+        line = document.readline()
+        while line != "":
+            line_list = parse_line(line)
+
+            # loop through words in line
+            for word in line_list:
+                word_occurrences_count[word] = 1 + _get_index_or_default(word_occurrences_count, word, default=0)
+                total_words_in_document += 1
+
+                _add_to_set_in_dict(forward_index, document.name, word)
+
+                _add_to_set_in_dict(invert_index, word, document.name)
+
+        _update_term_freq(term_freq, document.name, word_occurrences_count, total_words_in_document)
+
+        _update_doc_rank(doc_rank, document.name, total_words_in_document)
 
     end = timer()
     print("Time taken to index file: ", filename, " = ", end - start)
 
 
-def _update_forward_index(forward_index, document):
-    words = _create_set_of_all_words_in(document)
-
-    forward_index[document.name] = words
+def _update_doc_rank(doc_rank, name, total):
+    doc_rank[name] = 1 / total
 
 
-def _amend_or_create(given_set, new_item):
-    if given_set:
-        given_set.add(new_item)
-        return given_set
+def _update_term_freq(term_freq, name, occurrences_dict, total):
+    # get or create term frequency for this document
+    this_term_freq = term_freq.get(name)
+    if not this_term_freq:
+        this_term_freq = {}
+
+    # add term frequency for all words in this document
+    for word in occurrences_dict.keys():
+        this_term_freq[word] = occurrences_dict.get(word) / total
+
+
+def _get_index_or_default(dictionary, index, default):
+    item = dictionary.get(index)
+
+    if item:
+        return item
     else:
-        return {new_item}
+        return default
 
 
-def _update_term_freq(term_freq, document):
-    word_set = _create_set_of_all_words_in(document)
-    word_list = _create_list_of_all_words_in(document)
-    total_words = len(word_list)
+def _add_to_set_in_dict(dictionary, index, element):
+    set_at_index = dictionary.get(index)
 
-    for word in word_set:
-        word_occurrences = _occurrence_count(word, word_list)
-
-        term_freq[word] = word_occurrences / total_words
-
-
-def _occurrence_count(search_item, array):
-    count = 0
-    for item in array:
-        if item == search_item:
-            count += 1
-
-    return count
-
-
-def _create_list_of_all_words_in(document):
-    document.seek(0)
-
-    return parse_line(document.read())
-
-
-def _create_set_of_all_words_in(document):
-    return set(_create_list_of_all_words_in(document))
-
-
-def _update_doc_rank(doc_rank, document):
-    number_words_in_document = len(_create_list_of_all_words_in(document))
-    doc_rank[document.name] = 1 / number_words_in_document
-
-
-def _update_invert_index(invert_index, document):
-    words = _create_set_of_all_words_in(document)
-
-    for word in words:
-        is_present_in = invert_index.get(word)
-        invert_index[word] = _amend_or_create(given_set=is_present_in, new_item=document.name)
+    if set_at_index:
+        set_at_index.add(element)
+    else:
+        dictionary[index] = element
 
 
 # %%----------------------------------------------------------------------------
