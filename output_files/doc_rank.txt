@@ -1,0 +1,13 @@
+search_dir\anna_karenina.txt:3.1207382418384895e-06
+search_dir\divine_comedy.txt:2.888920988010978e-05
+search_dir\first.txt:0.0018083182640144665
+search_dir\first_simple.txt:0.025
+search_dir\little_women.txt:5.5629109600471735e-06
+search_dir\moby_dick.txt:5.084271805170704e-06
+search_dir\oliver_twist.txt:6.844954925971812e-06
+search_dir\room_with_a_view.txt:1.5897240239094494e-05
+search_dir\second.txt:0.0017985611510791368
+search_dir\shakespeare.txt:1.14944510537538e-06
+search_dir\sherlock.txt:1.0212522595206241e-05
+search_dir\third.txt:0.0020408163265306124
+search_dir\war_and_peace.txt:1.9447194061604823e-06
