@@ -70,15 +70,7 @@ def sanitize_word(word):
     """
     Removes all non ascii characters from a given word
     """
-    new_word = ""
-
-    lowercase_ascii = set(string.ascii_lowercase)
-
-    for letter in word.lower():
-        if letter in lowercase_ascii:
-            new_word += letter
-
-    return new_word
+    return word.lower().replace("[a-z]", "")
 
 
 # %%----------------------------------------------------------------------------
@@ -87,27 +79,15 @@ def parse_line(line):
     Parses a given line, 
     removes whitespaces, splits into list of sanitize words
     """
+    # remove whitespace and split into list
+    line: list = line.split()
 
-    dirty_list_of_words = _convert_to_no_whitespace_list(line)
+    # convert to lowercase and remove non ascii characters
+    clean_line: list = []
+    for word in line:
+        clean_line.append(sanitize_word(word))
 
-    return _sanitize_list(dirty_list_of_words)
-
-
-def _convert_to_no_whitespace_list(line):
-    line = line.strip()
-    return line.split(" ")
-
-
-def _sanitize_list(dirty_list_of_words):
-    list_of_words = []
-
-    for dirty_word in dirty_list_of_words:
-        sanitized_word = sanitize_word(dirty_word)
-
-        if len(sanitized_word) > 0:
-            list_of_words.append(sanitized_word)
-
-    return list_of_words
+    return clean_line
 
 
 # %%----------------------------------------------------------------------------
@@ -162,21 +142,19 @@ def _update_doc_rank(doc_rank, name, total):
     doc_rank[name] = 1 / total
 
 
-def _update_term_freq(term_freq, name, occurrences_dict, total):
-    # get or create term frequency for this document
-    this_term_freq = term_freq.get(name)
-    if not this_term_freq:
-        this_term_freq = {}
+def _update_term_freq(term_freq, document_name, occurrences_dict, total):
+    # instantiate dictionary for current document
+    term_freq[document_name] = {}
 
     # add term frequency for all words in this document
     for word in occurrences_dict.keys():
-        this_term_freq[word] = occurrences_dict.get(word) / total
+        term_freq[document_name][word] = occurrences_dict.get(word) / total
 
 
 def _get_index_or_default(dictionary, index, default):
     item = dictionary.get(index)
 
-    if item:
+    if item is not None:
         return item
     else:
         return default
@@ -188,7 +166,7 @@ def _add_to_set_in_dict(dictionary, index, element):
     if set_at_index:
         set_at_index.add(element)
     else:
-        dictionary[index] = element
+        dictionary[index] = {element}
 
 
 # %%----------------------------------------------------------------------------
