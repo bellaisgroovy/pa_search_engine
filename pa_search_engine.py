@@ -142,12 +142,16 @@ def index_file(filename
                 word_occurrences_count[word] = 1 + _get_index_or_default(word_occurrences_count, word, default=0)
                 total_words_in_document += 1
 
+                # update forward index
                 _add_to_set_in_dict(forward_index, document.name, word)
 
+                # update invert index
                 _add_to_set_in_dict(invert_index, word, document.name)
 
+        # update term frequency
         _update_term_freq(term_freq, document.name, word_occurrences_count, total_words_in_document)
 
+        # update document rank
         _update_doc_rank(doc_rank, document.name, total_words_in_document)
 
     end = timer()
