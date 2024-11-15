@@ -18,6 +18,7 @@ AS LONG AS IT REMAINS COMPATIBLE WITH main.py and tester.py
 import string
 from timeit import default_timer as timer
 import os
+import re
 
 
 # %%----------------------------------------------------------------------------
@@ -66,11 +67,15 @@ def crawl_folder(folder
 
 
 # %%----------------------------------------------------------------------------
+pattern = re.compile("[^a-z]")
+
+
 def sanitize_word(word):
     """
     Removes all non ascii characters from a given word
     """
-    return word.lower().replace("[a-z]", "")
+    word = word.lower()
+    return pattern.sub("", word)
 
 
 # %%----------------------------------------------------------------------------
@@ -107,6 +112,7 @@ def index_file(filename
     """
     start = timer()
 
+
     with open(filepath, 'r', encoding="utf-8") as document:
         # instantiate temporary trackers
         word_occurrences_count = {}  # {word : number of occurences}
@@ -127,6 +133,8 @@ def index_file(filename
 
                 # update invert index
                 _add_to_set_in_dict(invert_index, word, document.name)
+
+            line = document.readline()
 
         # update term frequency
         _update_term_freq(term_freq, document.name, word_occurrences_count, total_words_in_document)
@@ -163,7 +171,7 @@ def _get_index_or_default(dictionary, index, default):
 def _add_to_set_in_dict(dictionary, index, element):
     set_at_index = dictionary.get(index)
 
-    if set_at_index:
+    if set_at_index is not None:
         set_at_index.add(element)
     else:
         dictionary[index] = {element}
@@ -183,11 +191,37 @@ def search(search_phrase
     Then you multiply this value with that documents document-rank 
     to arrive at a final weight for a given query, for every document. 
     """
+    sorted_result = []  # [(doc_name, rank), (doc_name, rank)]
 
-    words = parse_line(search_phrase)
-    result = {}
+    words: list = parse_line(search_phrase)
+    if len(words) == 0:
+        return sorted_result
 
-    # <YOUR-CODE-HERE>
-    sorted_result = []
+    # for each word get the invert index and get the intersection of it and result
+    result: set = invert_index.get(words[0])
+    for word in words[1:]:
+        result = result.intersection(invert_index[word])#
 
-    return (sorted_result)
+    if result is None:
+        return sorted_result
+
+    # put result in a list of tuples (document, ranking)
+    ranking: list = []
+
+    try:
+        for document in result:
+            # calculate term freq x inverse document freq for each token
+            rank = doc_rank.get(document)
+            for word in words:
+                word_term_freq = term_freq.get(document).get(word)
+                word_inv_doc_freq = inv_doc_freq.get(word)
+                rank = rank * word_term_freq * word_inv_doc_freq
+
+            ranking.append((document, rank))
+    except Exception:
+        print(result)
+        print(search_phrase)    
+
+    sorted_result = sorted(ranking, key=lambda item: item[1])
+
+    return sorted_result
